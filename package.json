@@ -1,0 +1,27 @@
+{
+  "name": "assignment-2",
+  "version": "1.0.0",
+  "description": "Create a REST API backend service using NodeJs and Express",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashwinramuk/assignment-2.git"
+  },
+  "author": "Ashwin Kumar S",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ashwinramuk/assignment-2/issues"
+  },
+  "homepage": "https://github.com/ashwinramuk/assignment-2#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.8.0",
+    "nodemon": "^2.0.20"
+  }
+}
