@@ -1,3 +1,64 @@
 const router = require("express").Router();
 const User = require("../models/user")
-router.post("/register",)
+const jwt = require("jsonwebtoken")
+const secret = "FirstGitApp"
+const bcrypt = require("bcrypt")
+router.post("/register",async (req,res)=>{
+    try{
+        const result = await User.findOne({email:req.body.email})
+        if(result){
+            return res.status(400).json({status:"Failed", message:"User already exists with the given email"})
+        }else{
+            bcrypt.hash(req.body.password,10,async (err, hash)=>{
+                if(err){
+                    return res.status(500).json({
+                        status:"Failed",
+                        message:err.message
+                    })
+                }const user = await User.create({...req.body,password:hash})
+                res.json({status:"Success",user})
+            })   
+        }
+    }catch(e){
+        res.status(400).json({status:"Failed",message:e.message})
+    }
+    
+})
+router.post("/login",async (req,res)=>{
+    try{
+        const user = await User.findOne({email:req.body.email})
+        if(!user){
+            return res.status(409).json({status:"Failed",message:"There is no account with the given email"})
+        }
+        bcrypt.compare(req.body.password,user.password,(err,result)=>{
+            if(err){
+                return res.status(500).json({
+                    status:"Failed",
+                    message:err.message
+                })
+            }
+            if(result){
+                const token = jwt.sign({
+                    exp: Math.floor(Date.now() / 1000) + (60 * 60),
+                    data: user._id
+                  }, secret);
+                return res.json({status:"success",token})
+            }else{
+                res.status(401).json({message:"invalid credentials"})
+            }
+        })
+    }catch(e){
+        res.status(400).json(e.message)
+    }
+    
+})
+router.get("/user",async (req,res)=>{
+    try{
+        const users = await User.find();
+        res.json(users)
+    }catch(e){
+        res.status(400).json({status:"Failed",message:e.message})
+    }
+})
+
+module.exports = router;
