@@ -3,8 +3,13 @@ const User = require("../models/user")
 const jwt = require("jsonwebtoken")
 const secret = "FirstGitApp"
 const bcrypt = require("bcrypt")
-router.post("/register",async (req,res)=>{
+const {body, validationResult} = require("express-validator")
+router.post("/register",body('email').isEmail(),body('name').isAlpha(),body('password').isLength({min:6,max:16}),async (req,res)=>{
     try{
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            return res.status(400).json({errors:errors.array()})
+        }
         const result = await User.findOne({email:req.body.email})
         if(result){
             return res.status(400).json({status:"Failed", message:"User already exists with the given email"})
@@ -24,8 +29,12 @@ router.post("/register",async (req,res)=>{
     }
     
 })
-router.post("/login",async (req,res)=>{
+router.post("/login",body('email').isEmail(),body('password').isLength({min:6,max:16}),async (req,res)=>{
     try{
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            return res.status(400).json({errors:errors.array()})
+        }
         const user = await User.findOne({email:req.body.email})
         if(!user){
             return res.status(409).json({status:"Failed",message:"There is no account with the given email"})
