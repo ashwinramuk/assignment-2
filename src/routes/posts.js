@@ -28,9 +28,9 @@ router.get("/",async (req,res)=>{
 })
 router.put("/:id",async (req,res)=>{
     try{
-        const data = await posts.findOneAndUpdateOne({_id:req.params.id,user:req.user},req.body)
+        const data = await posts.findOneAndUpdate({_id:req.params.id,user:req.user},req.body)
         if(data){
-            res.json({status:"success",data})
+            res.json({status:"success"})
         }else{
             const result = await posts.findOne({_id:req.params.id})
             if(result){
